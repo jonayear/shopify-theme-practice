@@ -1,0 +1,112 @@
+{% if cart.item_count > 0 %}
+    <div class="container my-2" style="padding-top: 50px ;" >
+      <nav class="navbar navbar-light ">
+        <div class="container-fluid">
+          <h5 style="font" class="navbar-brand">Your Cart</h5>
+          <form class="d-flex">
+            <a style="text-decoration: none;" href="{{ routes.all_products_collection_url }}">Continue Shopping</a>
+            <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button> -->
+          </form>
+        </div>
+      </nav>
+    </div>
+    <div class="container">
+      <form action="" method="post" novalidate>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart.items %}
+            <tr>
+              <td>
+                <a href="{{ item.url }}">
+                  {% if item.image %}
+                    <img style="width:10rem;" src="{{ item.image | img_url:'small' }}" alt="{{ item.title | escape }}">
+                  {% else %}
+                     {{ 'product-1' | placeholder_svg_tag:'small' }}
+                  {% endif %}
+                  <br>
+                  <a href="{{ item.url }}" style="text-decoration: none; color: black;">{{ item.product.title }}</a><br>
+                  <span>{{ item.variant.title }}</span>
+                  <a style="padding-left: 5px; color: red; text-decoration: none;" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&quantity=0">Remove</a>
+                </a>
+              </td>
+              <td>
+                <input type="number" class="" name="updates[]" id="updates_{{ forloop.index }}" value="{{ item.quantity }}" min="1" aria-describedby="emailHelp">
+              </td>
+              <td> 
+                <p class="text-end">{{ item.line_price | money }}</p> 
+              </td>
+            </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="cart_notes"></textarea>
+                <label for="cart_notes">Cart Notes</label>
+              </div>
+            </div>
+            <div class="col-md-4 text-center">
+              {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'subtotal' %}
+                    <p class="text-end" style="font-weight: 600; padding-right: 6px">Subtotal:{{ cart.total_price | money }}</p>
+                {% when 'update_button' %}
+                  <div class="d-grid gap-2 col-6 mx-auto">
+                      <button class="btn btn-warning" name="update" type="submit">Update</button>
+                  </div>
+                {% when 'checkout_button' %}
+                  <div class="d-grid gap-2 col-6 mx-auto my-2">
+                    <button class="btn btn-success" name="checkout" type="submit">Checkout</button>
+                  </div>
+              {% endcase %}
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+{% else %}
+<div class="container" style="padding-top:200px;">
+  <div class=" py-4 m-auto">
+  <div class=" text-center">
+    <h5 class="card-title my-2 mb-2">Your Cart is empty</h5>
+    <a href="{{ routes.all_products_collection_url }}" class="btn btn-success">Continue Shopping</a>
+  </div>
+</div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name":"Template cart",
+  "settings":[],
+  "blocks":[
+     {
+      "type":"subtotal",
+      "name":"subtotal",
+      "limit":1
+     },
+     {
+      "type":"update_button",
+      "name":"Update button",
+      "limit":1
+     },
+     {
+      "type":"checkout_button",
+      "name":"Checkout Button",
+      "limit":1
+     }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,14 @@
+<div class="card my-2" style="width: 18rem;">
+  <a href="{{ product.url }}">
+    {%  if product.featured_image %}
+       <img src="{{ product.featured_image | img_url:'medium' }}" alt="{{ product.featured_image.alt }}">
+     {% else %}
+       {{'product-1' | placeholder_svg_tag }}
+    {% endif %}
+  </a>
+  <div class="card-body">
+    <a href="{{ product.url }}" class="card-title" style="text-decoration:none; color:black;">{{ product.title }}</a>
+    <p class="card-text">{{ product.vendor }}</p>
+    <p class="card-text">{{ product.price | money }}</p>
+  </div>
+</div>

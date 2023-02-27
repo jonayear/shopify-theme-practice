@@ -1,0 +1,12 @@
+{%  case media.media_type %}
+	{% when 'image' %}
+	   <img src="{{ media | img_url:'medium' }}" alt="{{media.preview_image.alt}}">
+	{% when 'exteral_vedio' %}
+	   {{ media | external_vedio_url: color:'white' | external_vedio_tag }}
+	{% when 'vedio' %}
+	   {{ media | vedio_tag: autoplay:true,  loop: true, muted: false, controls: true  }}
+	{% when 'model' %}
+	   {{ media | model_veiwer_tag }}
+	{% else %}
+	   {{ media | media_tag }}
+{% endcase %}

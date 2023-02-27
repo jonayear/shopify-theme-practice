@@ -1,0 +1,48 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 m-auto text-center" style="padding-top: 200px;">
+			<h2 class="text-center">{{ section.settings.title }}</h2>
+			<p class="text-center">{{ section.settings.sub_title }}</p>
+			<div>
+				{% if section.settings.btn_url == blank %}
+					{% assign shop_url = shop.secure_url %}
+				{% else %}
+				    {% assign shop_url = shop.btn_url %}
+				{% endif %}
+				<a class="btn btn-success text-center" href="{{ shop_url }}" role="button">{{section.settings.btn_title}} </a>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name":"template 404",
+	"settings":[
+	  {
+	  	"type":"text",
+	  	"id":"title",
+	  	"default":"404",
+	  	"label":"404 Heading Title"
+	  },
+	   {
+	  	"type":"text",
+	  	"id":"sub_title",
+	  	"default":"The page you are looking for is not found",
+	  	"label":"Sub-Title Text"
+	  },
+	   {
+	  	"type":"text",
+	  	"id":"btn_title",
+	  	"default":"Back to Homepage",
+	  	"label":"Button Label"
+	  },
+	   {
+	  	"type":"url",
+	  	"id":"btn_url",
+	  	"label":"Button URL"
+	  }
+	]
+}
+{% endschema %}

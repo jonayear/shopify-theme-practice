@@ -1,0 +1,55 @@
+<div class="container my-2 ">
+	<div class="row "style="padding-top:200px;">
+		{% if section.settings.title %}
+			<h2 class="text-center my-2">{{ section.settings.title }}</h2>
+		{% endif %}
+		
+		<div class="col-md-8 m-auto" >
+			{% form 'contact' %}
+			   <div class="container">
+				   	<div class="row">
+				   		<div class="col-md-6 mb-3">
+				   			<div class="form-floating mb-1">
+							  <input type="email" class="form-control" required name="contact[email]" id="contact_email" placeholder="name@example.com">
+							  <label for="contact_email">Email address</label>
+							</div>
+				   		</div>
+				   		<div class="col-md-6 mb-3">
+				   			<div class="form-floating mb-1">
+							  <input type="text" class="form-control" required name="contact[name]" id="contact_name" placeholder="name@example.com">
+							  <label for="contact_name">Email address</label>
+							</div>
+				   		</div>
+				   	</div>
+			   </div>
+			   <div class="container ">
+			   	<div class="form-floating">
+				  <textarea class="form-control" name="contact[body]" required placeholder="Leave a comment here" id="contact_body"></textarea>
+				  <label for="contact_body">Comments</label>
+				</div>
+			   </div>
+			   <div class="d-grid gap-2 col-6 mx-auto">
+				  <button class="btn btn-dark my-2" type="submit">Submit Message</button>
+				</div>
+			{% endform %}
+		</div>
+	</div>
+</div>
+{% schema %}
+{
+	"name":"Contact Form",
+	"settings":[
+	   {
+	   	"type":"text",
+	   	"id":"title",
+	   	"label":"Contact form title",
+	   	"default":"Contact us"
+	   } 
+	],
+	"presets":[
+	  {
+	  	"name":"Contact Form"
+	  }
+	]
+}
+{% endschema %}

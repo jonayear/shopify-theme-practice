@@ -1,0 +1,132 @@
+    <div class="container my-3">
+      <div class="row">
+        <div class="col-md-6 ">
+          {% for media in product.media %}
+            <div class="container my-2">
+              <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                  <div class="card my-2" style="width: 18rem;">
+                    {% render 'product-media', media:media %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="col-md-6">
+          <div class="container my-2">
+            <div class="row">
+              <div class="col-md-12">
+                {% form 'product',product,id:'product-form',novalidate:'novalidate' %}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {% for block in section.blocks %}
+                    {%  case block.type %}
+                    {% when 'vendor' %}
+                     <small> {{ product.vendor }} </small>
+                    {% when 'title' %}
+                      <h3 style="padding-bottom: 5px;">{{ product.title }}</h3>
+                    {% when 'price' %}
+                      <div>
+                      {% assign product_price = product.selected_or_first_available_variant %}
+                      <span class="text-decoration-line-through disabled fs-6">{{ product_price.compare_at_price | money }}</span>
+                      <span class="px-2">{{ product_price.price | money }}</span>
+                      {% if product_price.price < product_price.compare_at_price %}
+                        <span class="border border-dark rounded-pill p-3 mb-2 bg-dark text-white py-2">sale</span>
+                      {% endif %} 
+                    </div>
+                    {% when 'variant_selector' %}
+                      <div class="my-2">
+                      {% unless product.has_only_default_variant %}
+                        <div data-url="{{ product.url }}" data-section="{{ section.id }}">
+                          {% for option in product.options_with_values %}
+                            <label for="Options{{ section.id }}-{{ forloop.index0 }}" class="form-label">{{ option.name }}</label>
+                            <select class="form-select" for="Options{{ section.id }}-{{ forloop.index0 }}" name="options[{{ option.name | escape }}]" aria-label="Default select example">
+                              {% for value in option.values %}
+                                 <option value="{{ value | escape}}"
+                                   {% if option.selected_value == value %}
+                                     selected="selected"
+                                   {% endif %}
+                                 >
+                                {{ value }}
+                               </option>
+                              {% endfor %}
+                            </select>
+                          {% endfor %}
+                        </div>
+                      {% endunless %}
+                    </div>
+                    {% when 'quantity' %}
+                      <div class="my-1">
+                      <div class="mb-3">
+                        <label for="Quantity-{{ option.id }}" class="form-label">Quantity</label>
+                        <input type="number" min="1" value="1" name="quantity" id="Quantity-{{ option.id }}" class="form-control" id="quantity">
+                      </div>
+                    </div>
+                    {% when 'description' %}
+                      <p> {{product.description}} </p>
+                    {% when 'checkout_buttons' %}
+                      <div class="my-2 d-grid gap-2 col-6 mx-auto">
+                        <button type="submit" class="btn btn-success" {% if product.selected_or_first_available_variant == false %}
+                              disabled="" 
+                            {% endif %}
+                            >
+                            {% if product.selected_or_first_available_variant == false %}
+                            Sold out
+                            {% else %}
+                          Add to cart
+                          {% endif %}
+                        </button>
+                    </div>
+                  {% endcase %}
+                  {% endfor %}
+                {% endform %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% schema %}
+{
+  "name":"template product",
+  "settings":[],
+  "blocks":[
+    {
+      "type":"vendor",
+      "name":"Vendor",
+      "limit":1
+    },
+    {
+      "type":"title",
+      "name":"Title",
+      "limit":1
+    },
+    {
+      "type":"price",
+      "name":"Price",
+      "limit":1
+    },
+    {
+      "type":"variant_selector",
+      "name":"Variant_selector",
+      "limit":1
+    },
+    {
+      "type":"quantity",
+      "name":"Quantity",
+      "limit":1
+    },
+    {
+      "type":"description",
+      "name":"Description",
+      "limit":1
+    },
+     {
+      "type":"checkout_buttons",
+      "name":"Checkout Buttons",
+      "limit":1
+    }
+  ]
+}
+{% endschema %}

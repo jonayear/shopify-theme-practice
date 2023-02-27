@@ -1,0 +1,54 @@
+<div class="container">
+	{% paginate blog.articles by section.settings.number_of_pr_page_show %}
+	<h1 class="text-center">{{ blog.title }}</h1>
+	<div class="container">
+		<div class="row">
+			{% for article in blog.articles %}
+				<div class="col-md-4">
+					<div class="card" style="width: 18rem; height: 30rem;">
+					  {% if article.image %}
+					  	<img src="{{ article.image | img_url:'medium'}}" alt="{{ article.image.alt }}">
+					  	{% else %}
+					  	{{ 'image' | placeholder_svg_tag }}
+					  {% endif %}
+					  <div class="card-body">
+					    <h5 class="card-title">{{ article.title }}</h5>
+					    {% if article.excerpt.size > 0 %}
+					         <p>{{ article.excerpt | strip_html | truncatewords:15 }}</p>
+					    {% else %}
+					        <p>{{ article.content | strip_html | truncatewords:15 }}</p>
+					    {% endif %}
+					    <a href="{{ article.url }}" class="btn btn-warning">{{ section.settings.button_title }}</a>
+					  </div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="my-2">
+		    {% render 'pagination', pagination: paginate %}
+	    </div>
+	</div>
+	{% endpaginate %}
+</div>
+{% schema %}
+{
+	"name":"template blog",
+	"settings":[
+	   {
+	   	"type":"text",
+	   	"id":"button_title",
+	   	"label":"Button Title Label",
+	   	"default":"Read More"
+	   },
+	   {
+	   	"type":"range",
+	   	"id":"number_of_pr_page_show",
+	   	"min":1,
+	   	"max":6,
+	   	"step":1,
+	   	"label":"Blog Per Page",
+	   	"default":3
+	   }
+	]
+}
+{% endschema %}

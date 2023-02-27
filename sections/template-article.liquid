@@ -1,0 +1,128 @@
+<div class="container my-2">
+	{% for block in section.blocks %}
+	   {%  case block.type %}
+		   {% when 'article_title' %}
+		      <h1 class="text-center">{{ article.title }}</h1> 
+		   {% when 'article_author' %}
+		        {% if section.settings.enabled_author %}
+		        <div class="text-center">
+		        	<small class="text-center">{{ article.author }}</small>
+		        </div>
+			    {% endif %}
+		   {% when 'article_publish_date' %}
+		        {%  if  section.settings.enabled_published_date %}
+		        <div class="text-center">
+		        	<time class="text-center" datetime="{{ article.published_at | format:'on_date' }}">{{ article.published_at | format:'on_date' }}</time>
+		        </div>
+					
+				{% endif %}
+		   {% when 'article_image' %}
+		        <div class="my-2 text-center">
+		             {% if article.image %}
+                        <img style="width: 80%;" src="{{ article.image | img_url:'large' }}" alt="{{ article.image.alt }}">
+		             {% else %}
+		                {{ 'lifestyle-2' | placeholder_svg_tag }}
+		             {% endif %}
+				</div>
+		   {% when 'article_content' %}
+		        <div class="my-2">
+					<p class="text-center">{{ article.content }}</p>
+				</div>  
+	   {% endcase %}
+	{% endfor %}
+	    {%  if blog.comments_enabled? %}
+	        {%  if article.comments_count > 0 %}
+	            <div class="my-2 container">
+	            	<h5 class="text-center">See What people are saying</h5>
+	            	{% paginate article.comments by 5 %}
+	            	  {% for comment in article.comments %}
+	            	  	<h5>{{ comment.author }}</h5>
+	            	  	<small>{{ comment.created_at }}</small>
+	            	  	<p>{{ comment.content }}</p>
+	            	  {% endfor %}
+	            	  {% render 'pagination', pagination: paginate %}
+		     	    {% endpaginate %}
+	            </div>
+	        {% else %}
+	        <p class="text-center">Thier is no comments in This Article</p>
+	        {% endif %}
+	        {% form 'new_comment',article %}
+	           <div class="container">
+	           	 <div class="row">
+	           	 	{% if  form.errors %}
+	           	 	    {% for error in form.errors %}
+	           	 	    	<div class="alert alert-danger" role="alert">
+						      {{form.errors.messages[error]}}
+						    </div>
+	           	 	    {% endfor %}
+	            	{% endif %}
+	           	 	<div class="col-md-6">
+						<div class="mb-3">
+						    <label for="comment_email" class="form-label">Email address</label>
+						    <input type="email" class="form-control" name="comment[email]" id="comment_email" required aria-describedby="jon@don.com">
+						</div>
+	           	 	</div>
+	           	 	<div class="col-md-6">
+						<div class="mb-3">
+						    <label for="comment_author" class="form-label">Name</label>
+						    <input type="text" class="form-control" name="comment[author]" id="comment_author" required aria-describedby="JonDon">
+						</div>
+	           	 	</div>
+	           	 </div>
+	           	    <div class="form-floating">
+					  <textarea class="form-control" placeholder="Leave a comment here" name="comment[body]" required  id="comment_content"></textarea>
+					  <label for="comment_content">Comments</label>
+					</div>
+	           </div>
+	           <div class="d-grid gap-2 col-6 mx-auto mb-3 mt-3">
+				  <button class="btn btn-dark" type="submit">Post a comment</button>
+			   </div>
+	        {% endform %}
+	    {% endif %}	
+</div>
+{% schema %}
+{
+	"name":"template article",
+	"settings":[
+	   {
+	   	"type":"checkbox",
+	   	"id":"enabled_author",
+	   	"label":"Enable Author",
+	   	"default":true
+	   },
+	     {
+	   	"type":"checkbox",
+	   	"id":"enabled_published_date",
+	   	"label":"Enable Published Date",
+	   	"default":true
+	   }
+	],
+	"blocks":[
+	  {
+	  	"type":"article_title",
+	  	"name":"title",
+	  	"limit":1
+	  },
+	   {
+	  	"type":"article_author",
+	  	"name":"author",
+	  	"limit":1
+	  },
+	   {
+	  	"type":"article_publish_date",
+	  	"name":"Publish Date",
+	  	"limit":1
+	  },
+	   {
+	  	"type":"article_image",
+	  	"name":"thumbnil",
+	  	"limit":1
+	  },
+	   {
+	  	"type":"article_content",
+	  	"name":"Content",
+	  	"limit":1
+	  }
+	]
+}
+{% endschema %}
